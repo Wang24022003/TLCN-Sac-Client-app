@@ -12,12 +12,12 @@ import {FaThList} from 'react-icons/fa'
 import ShopProducts from '../components/products/ShopProducts';
 import Pagination from '../components/Pagination';
 import { useDispatch, useSelector } from 'react-redux';
-import { get_products, price_range_product } from '../store/reducers/homeReducer';
+import {   query_product } from '../store/reducers/homeReducer';
 
 const Shops = () => {
 
     const dispatch = useDispatch()
-    const {products,categories,priceRange,latest_product} = useSelector(state => state.home)
+    const {products,categories,latest_product} = useSelector(state => state.home)
 
    
 
@@ -32,18 +32,26 @@ const Shops = () => {
 
     const [productShow,setProductShow]= useState(products); 
     useEffect(() => { 
-
-        dispatch(price_range_product({ min: state.values[0], max: state.values[1] }));
-        setProductShow(priceRange)
+        dispatch(query_product(`current=1&pageSize=1111&price>=${state.values[0]}&price<=${state.values[1]}`));
+        setProductShow(products)
     },[state])
 
 
-    // useEffect(() => { 
-    //     dispatch(price_range_product({ min: state.values[0], max: state.values[1] }));
-    //     setProductShow(priceRange)
-    //     //dispatch(get_products())
-    // },[])
+
+
+    const [category, setCategory] = useState('')
+    const queryCategory = (e, value) => {
+        if (e.target.checked) {
+            setCategory(value)
+        } else {
+            setCategory('')
+        }
+    }
     
+    useEffect(() => { 
+        dispatch(query_product(`current=1&pageSize=11111&category=${category}`));
+        setProductShow(products)
+    },[state])
 
     return (
         <div>
@@ -77,9 +85,10 @@ const Shops = () => {
                     <div className='py-2'>
                         {
                             categories.map((c,i) => <div key={i} className='flex justify-start items-center gap-2 py-1'>
-                                <input type="checkbox" id={c.name} />
+                            <input checked={category === c.name ? true : false} onChange={(e)=>queryCategory(e,c.name)} type="checkbox" id={c.name} />
                                 <label className='text-slate-600 block cursor-pointer' htmlFor={c.name}>{c.name}</label>
                             </div>)
+                            
                         }
                     </div>
 

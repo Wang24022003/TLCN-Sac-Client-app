@@ -16,11 +16,11 @@ export const get_category = createAsyncThunk(
 // End Method 
 
 
-export const get_products = createAsyncThunk(
-     'product/get_products',
-     async(_, { fulfillWithValue }) => {
+export const query_product = createAsyncThunk(
+     'product/query_product',
+     async(query = '', { fulfillWithValue }) => {
          try {
-             const {data} = await api.get('/products?current=1&pageSize=100')
+             const {data} = await api.get(`/products?${query}`)
               console.log(data)
              return fulfillWithValue(data)
          } catch (error) {
@@ -30,19 +30,7 @@ export const get_products = createAsyncThunk(
  )
  // End Method 
 
- export const price_range_product = createAsyncThunk(
-    'product/price_range_product',
-    async ({ min, max }, { fulfillWithValue }) => {
-        try {
-            const { data } = await api.get(`/products?current=1&pageSize=1111&min=${min}&max=${max}`);
-            console.log(data);
-            return fulfillWithValue(data);
-        } catch (error) {
-            console.log(error.response);
-        }
-    }
-)
-// End Method
+ 
 
 
 
@@ -55,7 +43,7 @@ export const homeReducer = createSlice({
           latest_product : [],
           topRated_product : [],
           discount_product : [],
-          priceRange : []
+          
      },
      reducers : {
   
@@ -66,20 +54,15 @@ export const homeReducer = createSlice({
           state.categories = payload.data.result;
       })
 
-      .addCase(get_products.fulfilled, (state, { payload }) => {
-          state.products = payload.data.result;
-          state.latest_product = payload.data.result;
+
+ 
+    .addCase(query_product.fulfilled, (state, { payload }) => {
+        state.products = payload.data.result;
+        state.latest_product = payload.data.result;
           state.topRated_product = payload.data.result;
           state.discount_product = payload.data.result;
-          //state.priceRange = payload.data.result;
-      })
-
-
-      .addCase(price_range_product.fulfilled, (state, { payload }) => {
-        state.priceRange = payload.data.result;
         
     })
- 
  
      }
  })
