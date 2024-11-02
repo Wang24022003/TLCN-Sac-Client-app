@@ -20,7 +20,7 @@ const Header = () => {
      
     const [showShidebar, setShowShidebar] = useState(true);
     const [categoryShow, setCategoryShow] = useState(true);
-    const user = true
+    const user = false
     const wishlist_count = 3
      
 
@@ -65,7 +65,7 @@ const Header = () => {
             user ? <Link className='flex cursor-pointer justify-center items-center gap-2 text-sm text-black' to='/dashboard'>
                 <span> <FaUser/> </span>
                 <span>Kazi Ariyan </span>
-                 </Link> : <Link className='flex cursor-pointer justify-center items-center gap-2 text-sm text-black' to='/login'>
+                </Link> : <Link to='/login' className='flex cursor-pointer justify-center items-center gap-2 text-sm text-black'>
                 <span> <FaLock /> </span>
                 <span>Login </span>
                  </Link>
@@ -250,7 +250,7 @@ const Header = () => {
                         return (
                          <li key={i} className='flex justify-start items-center gap-2 px-[24px] py-[6px]'>
                             <img src={c.url} className='w-[30px] h-[30px] rounded-full overflow-hidden' alt="" />
-                            <Link className='text-sm block'>{c.name}</Link>
+                            <Link to={`/products?current=1&pageSize=1111&category=${c._id}`} className='text-sm block'>{c.name}</Link>
                          </li>
                         )
                     })

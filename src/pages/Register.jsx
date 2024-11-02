@@ -4,14 +4,21 @@ import Footer from '../components/Footer';
 import { FaFacebookF } from "react-icons/fa6";
 import { FaGoogle } from "react-icons/fa6"; 
 import { Link } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { customer_register } from '../store/reducers/authReducer';
 
 const Register = () => {
 
     const [state, setState] = useState({
         name: '',
         email: '',
-        password: ''
-    })
+        password: '',
+        age: '',
+        gender: 'female', 
+        address: ''
+    });
+    
+    const dispatch = useDispatch()
 
     const inputHandle = (e) => {
         setState({
@@ -22,7 +29,7 @@ const Register = () => {
  
     const register = (e) => {
         e.preventDefault()
-        console.log(state)
+        dispatch(customer_register(state))
     }
 
 
@@ -52,6 +59,28 @@ const Register = () => {
         <label htmlFor="password">Password</label>
         <input onChange={inputHandle} value={state.password}  className='w-full px-3 py-2 border border-slate-200 outline-none focus:border-green-500 rounded-md' type="password" name="password" id="password" placeholder='Password' required />
     </div>
+
+ 
+    <div className='flex flex-col gap-1 mb-2'>
+        <label htmlFor="age">Age</label>
+        <input onChange={inputHandle} value={state.age} className='w-full px-3 py-2 border border-slate-200 outline-none focus:border-green-500 rounded-md' type="number" name="age" id="age" placeholder='Age' required />
+    </div>
+
+ 
+    <div className='flex flex-col gap-1 mb-2'>
+        <label htmlFor="gender">Gender</label>
+        <select onChange={inputHandle} value={state.gender} className='w-full px-3 py-2 border border-slate-200 outline-none focus:border-green-500 rounded-md' name="gender" id="gender" required>
+            <option value="female">Female</option>
+            <option value="male">Male</option>
+        </select>
+    </div>
+
+
+    <div className='flex flex-col gap-1 mb-2'>
+        <label htmlFor="address">Address</label>
+        <input onChange={inputHandle} value={state.address} className='w-full px-3 py-2 border border-slate-200 outline-none focus:border-green-500 rounded-md' type="text" name="address" id="address" placeholder='Address' required />
+    </div>
+
 
     <button className='px-8 w-full py-2 bg-[#059473] shadow-lg hover:shadow-green-500/40 text-white rounded-md'>Register</button>
  

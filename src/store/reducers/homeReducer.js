@@ -43,6 +43,12 @@ export const homeReducer = createSlice({
           latest_product : [],
           topRated_product : [],
           discount_product : [],
+          metadata : {
+            "current": "1",
+            "pageSize": "10",
+            "pages": 0,
+            "total": 0
+          }
           
      },
      reducers : {
@@ -61,6 +67,7 @@ export const homeReducer = createSlice({
         state.latest_product = payload.data.result;
           state.topRated_product = payload.data.result;
           state.discount_product = payload.data.result;
+          state.metadata = payload.data.meta;
         
     })
  
