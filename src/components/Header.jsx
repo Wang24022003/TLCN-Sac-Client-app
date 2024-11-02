@@ -250,7 +250,7 @@ const Header = () => {
                         return (
                          <li key={i} className='flex justify-start items-center gap-2 px-[24px] py-[6px]'>
                             <img src={c.url} className='w-[30px] h-[30px] rounded-full overflow-hidden' alt="" />
-                            <Link to={`/products?current=1&pageSize=1111&category=${c._id}`} className='text-sm block'>{c.name}</Link>
+                            <Link to={`/products?current=1&pageSize=10&category=${c._id}`} className='text-sm block'>{c.name}</Link>
                          </li>
                         )
                     })
