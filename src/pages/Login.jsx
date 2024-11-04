@@ -1,14 +1,22 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { FaFacebookF } from "react-icons/fa6";
 import { FaGoogle } from "react-icons/fa6"; 
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { customer_login,messageClear } from '../store/reducers/authReducer';
+import toast from 'react-hot-toast';
+import { FadeLoader } from 'react-spinners';
 
 const Login = () => {
 
+    const navigate = useNavigate()
+    const {loader,errorMessage,successMessage,userInfo } = useSelector(state => state.auth)
+    const dispatch = useDispatch()
+
     const [state, setState] = useState({ 
-        email: '',
+        username: '',
         password: ''
     })
 
@@ -21,12 +29,31 @@ const Login = () => {
  
     const login = (e) => {
         e.preventDefault()
-        console.log(state)
+        dispatch(customer_login(state))
     }
+
+    useEffect(() => { 
+        if (successMessage) {
+            toast.success(successMessage)
+            dispatch(messageClear())  
+        } 
+        if (errorMessage) {
+            toast.error(errorMessage)
+            dispatch(messageClear())  
+        } 
+        if (userInfo) {
+            navigate('/')
+        }
+    },[successMessage,errorMessage, userInfo])
 
 
     return (
         <div>
+             {
+                loader && <div className='w-screen h-screen flex justify-center items-center fixed left-0 top-0 bg-[#38303033] z-[999]'>
+                    <FadeLoader/>
+                </div>
+            }
             <Header/>
     <div className='bg-slate-200 mt-4'>
         <div className='w-full justify-center items-center p-10'>
@@ -40,7 +67,7 @@ const Login = () => {
 
     <div className='flex flex-col gap-1 mb-2'>
         <label htmlFor="email">Email</label>
-        <input onChange={inputHandle} value={state.email}  className='w-full px-3 py-2 border border-slate-200 outline-none focus:border-green-500 rounded-md' type="email" name="email" id="email" placeholder='Email' required />
+        <input onChange={inputHandle} value={state.username}  className='w-full px-3 py-2 border border-slate-200 outline-none focus:border-green-500 rounded-md' type="email" name="username" id="username" placeholder='Username' required />
     </div>
 
 
@@ -72,6 +99,21 @@ const Login = () => {
     <div className='text-center text-slate-600 pt-1'>
         <p>Don't Have An Account ? <Link className='text-blue-500' to='/register'> Register</Link> </p>
     </div> 
+
+     <a target='_blank' href="http://localhost:3001/login">
+     <div className='px-8 w-full py-2 bg-[#02e3e0] shadow hover:shadow-red-500/50 text-white rounded-md flex justify-center items-center gap-2 mb-3'>
+            Login As a Seller
+     </div>
+     </a>
+ 
+     <a target='_blank' href="http://localhost:3001/register">
+     <div className='px-8 w-full py-2 bg-[#ad2cc4] shadow hover:shadow-red-500/50 text-white rounded-md flex justify-center items-center gap-2 mb-3'>
+            Register As a Seller
+     </div>
+     </a>
+
+
+
             </div> 
 
         <div className='w-full h-full py-4 pr-4'>
