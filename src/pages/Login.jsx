@@ -5,7 +5,7 @@ import { FaFacebookF } from "react-icons/fa6";
 import { FaGoogle } from "react-icons/fa6"; 
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { customer_login, messageClear } from '../store/reducers/authReducer';
+import { customer_login, messageClear, requestOtp } from '../store/reducers/authReducer';
 import toast from 'react-hot-toast';
 import { FadeLoader } from 'react-spinners';
 
@@ -30,6 +30,8 @@ const Login = () => {
         e.preventDefault();
         dispatch(customer_login(state));
     };
+  
+    
 
     useEffect(() => {
         if (successMessage) {
@@ -38,7 +40,10 @@ const Login = () => {
         } 
         if (errorMessage) {
             if (errorMessage === "Tài khoản chưa được kích hoạt") {
-                navigate('/verify-email'); // Chuyển đến trang verify-email nếu tài khoản chưa kích hoạt
+                localStorage.setItem('email', state.username);
+                localStorage.setItem('password', state.password);
+                dispatch(requestOtp({email:state.username}));
+                navigate('/otp/retry-active');
             } else {
                 toast.error(errorMessage)
                 
@@ -83,7 +88,11 @@ const Login = () => {
                                     </div>
 
                                     <div className='flex flex-col gap-1 mb-2'>
-                                        <label htmlFor="password">Password</label>
+                                    
+                                        <div className='flex justify-between items-center'>
+                                            <label htmlFor="password">Password</label>
+                                            <Link to="/forgot-password" className='text-blue-500'>Quên mật khẩu?</Link>
+                                        </div>
                                         <input 
                                             onChange={inputHandle} 
                                             value={state.password}  
@@ -94,6 +103,7 @@ const Login = () => {
                                             placeholder='Password' 
                                             required 
                                         />
+                                        
                                     </div>
 
                                     <button className='px-8 w-full py-2 bg-[#059473] shadow-lg hover:shadow-green-500/40 text-white rounded-md'>Login</button>

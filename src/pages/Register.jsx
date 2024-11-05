@@ -35,15 +35,19 @@ const Register = () => {
     useEffect(() => { 
         if (successMessage) {
             toast.success(successMessage)
-            dispatch(messageClear())  
+            dispatch(messageClear()) 
+            localStorage.setItem('email', state.email);
+                localStorage.setItem('password', state.password); 
+            navigate('/otp/register')
+
         } 
         if (errorMessage) {
             toast.error(errorMessage)
             dispatch(messageClear())  
         } 
-        if (userInfo) {
-            navigate('/')
-        }
+        // if (userInfo) {
+        //     navigate('/')
+        // }
     },[successMessage,errorMessage])
 
 

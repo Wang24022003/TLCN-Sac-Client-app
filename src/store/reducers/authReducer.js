@@ -50,12 +50,13 @@ export const requestOtp = createAsyncThunk(
 
 export const checkOtp = createAsyncThunk(
     'auth/checkOtp',
-    async ({ email, code }, { rejectWithValue }) => {
+    async ({ email, code }, { rejectWithValue, fulfillWithValue }) => {
         try {
             const { data } = await api.post('/auth/check-code', { email, code });
-            const token = data.data.access_token; 
-            localStorage.setItem('access_token', token)
-            return data;
+            return fulfillWithValue(data);
+            // const token = data.data.access_token; 
+            // localStorage.setItem('access_token', token)
+            //return data;
         } catch (error) {
             return rejectWithValue(error.response.data);
         }
@@ -83,7 +84,7 @@ export const authReducer = createSlice({
         userInfo : decodeToken(localStorage.getItem('access_token')),
         errorMessage : '',
         successMessage: '', 
-        email:'',
+        
     },
     reducers : {
 
@@ -130,12 +131,11 @@ export const authReducer = createSlice({
             state.loader = false;
             state.userInfo = userInfo;
 
-            // Kiểm tra trạng thái xác thực tài khoản
+          
             if (userInfo.isActive) {
-                // Nếu tài khoản đã được xác thực, có thể không cần điều hướng ở đây
-                // Điều hướng sẽ được thực hiện trong component
+                
             } else {
-                state.errorMessage = "Tài khoản chưa được kích hoạt"; // Gửi thông báo cho component
+                state.errorMessage = "Tài khoản chưa được kích hoạt"; 
             }
         })
 
@@ -162,11 +162,11 @@ export const authReducer = createSlice({
         
         .addCase(checkOtp.fulfilled, (state, { payload }) => {
             const token = payload.data.access_token; 
-            localStorage.setItem('access_token', token);  // Lưu token vào localStorage
-            const userInfo = decodeToken(token); // Giải mã để lấy thông tin người dùng từ token
+            //localStorage.setItem('access_token', token);  // Lưu token vào localStorage
+            //const userInfo = decodeToken(token); // Giải mã để lấy thông tin người dùng từ token
             state.successMessage = "Mã OTP đã được xác thực thành công";
             state.loader = false;
-            state.userInfo = userInfo; // Cập nhật thông tin người dùng trong Redux state
+            //state.userInfo = userInfo; // Cập nhật thông tin người dùng trong Redux state
         })
         
         .addCase(checkOtp.rejected, (state, { payload }) => {

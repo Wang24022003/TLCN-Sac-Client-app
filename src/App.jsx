@@ -28,7 +28,7 @@ function App() {
       <Route path='/' element={<Home/>} />
       <Route path='/login' element={<Login/>} />
       <Route path='/verify-email' element={<VerifyEmail/>} />
-      <Route path='/otp' element={<OTPVerification/>} />
+      <Route path='/otp/:id' element={<OTPVerification/>} />
       <Route path='/register' element={<Register/>} />
       <Route path='/shops' element={<Shops/>} />
       <Route path='/card' element={<Card/>} />

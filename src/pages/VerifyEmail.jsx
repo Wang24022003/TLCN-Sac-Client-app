@@ -21,7 +21,7 @@ const VerifyEmail = () => {
      e.preventDefault();
      localStorage.setItem('email', email);
      //dispatch(setEmail(email)); 
-     dispatch(requestOtp({ email })); 
+     //dispatch(requestOtp({ email })); 
  };
  
 
@@ -29,7 +29,7 @@ const VerifyEmail = () => {
         if (successMessage) {
             toast.success(successMessage);
             dispatch(messageClear());
-            navigate('/otp');
+            navigate('/otp/forgot-password');
         }
         if (errorMessage) {
             toast.error(errorMessage);
