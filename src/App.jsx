@@ -13,6 +13,8 @@ import { get_category } from './store/reducers/homeReducer';
 import { useDispatch} from 'react-redux';
 import CategoryShop from './pages/CategoryShop';
 import SearchProducts from './pages/SearchProducts';
+import VerifyEmail from './pages/VerifyEmail';
+import OTPVerification from './pages/OTPVerification';
 
 function App() {
   const dispatch = useDispatch()
@@ -25,6 +27,8 @@ function App() {
     <Routes>
       <Route path='/' element={<Home/>} />
       <Route path='/login' element={<Login/>} />
+      <Route path='/verify-email' element={<VerifyEmail/>} />
+      <Route path='/otp' element={<OTPVerification/>} />
       <Route path='/register' element={<Register/>} />
       <Route path='/shops' element={<Shops/>} />
       <Route path='/card' element={<Card/>} />
