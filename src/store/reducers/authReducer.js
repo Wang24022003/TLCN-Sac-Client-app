@@ -48,6 +48,18 @@ export const requestOtp = createAsyncThunk(
     }
 );
 
+export const retryPassword = createAsyncThunk(
+    'auth/retryPassword',
+    async ({ email }, { rejectWithValue, fulfillWithValue }) => {
+        try {
+            const { data } = await api.post('/auth/retry-password', { email });
+            return fulfillWithValue(data);
+        } catch (error) {
+            return rejectWithValue(error.response.data);
+        }
+    }
+);
+
 export const checkOtp = createAsyncThunk(
     'auth/checkOtp',
     async ({ email, code }, { rejectWithValue, fulfillWithValue }) => {
@@ -63,7 +75,20 @@ export const checkOtp = createAsyncThunk(
     }
 );
 
-
+export const changePassword = createAsyncThunk(
+    'auth/changePassword',
+    async ({ code, password, confirmPassword, email }, { rejectWithValue, fulfillWithValue }) => {
+        try {
+            const { data } = await api.post('/auth/change-password', {  code, password, confirmPassword, email });
+            return fulfillWithValue(data);
+            // const token = data.data.access_token; 
+            // localStorage.setItem('access_token', token)
+            //return data;
+        } catch (error) {
+            return rejectWithValue(error.response.data);
+        }
+    }
+);
 
 const decodeToken = (access_token) => {
     if (access_token) {
@@ -155,6 +180,18 @@ export const authReducer = createSlice({
         })
 
 
+        .addCase(retryPassword.pending, (state) => {
+            state.loader = true;
+        })
+        .addCase(retryPassword.fulfilled, (state, { payload }) => {
+            state.successMessage = "Mã OTP đã được gửi thành công. Vui lòng kiểm tra email.";
+            state.loader = false;
+            
+        })
+        .addCase(retryPassword.rejected, (state, { payload }) => {
+            state.errorMessage = payload.message || "Đã xảy ra lỗi. Vui lòng thử lại.";
+            state.loader = false;
+        })
 
         .addCase(checkOtp.pending, (state) => {
             state.loader = true;
@@ -170,6 +207,25 @@ export const authReducer = createSlice({
         })
         
         .addCase(checkOtp.rejected, (state, { payload }) => {
+            state.errorMessage = payload?.message || "Mã OTP không hợp lệ";
+            state.loader = false;
+        })
+
+
+        .addCase(changePassword.pending, (state) => {
+            state.loader = true;
+        })
+        
+        .addCase(changePassword.fulfilled, (state, { payload }) => {
+            const token = payload.data.access_token; 
+            //localStorage.setItem('access_token', token);  // Lưu token vào localStorage
+            //const userInfo = decodeToken(token); // Giải mã để lấy thông tin người dùng từ token
+            state.successMessage = payload.message;
+            state.loader = false;
+            //state.userInfo = userInfo; // Cập nhật thông tin người dùng trong Redux state
+        })
+        
+        .addCase(changePassword.rejected, (state, { payload }) => {
             state.errorMessage = payload?.message || "Mã OTP không hợp lệ";
             state.loader = false;
         })

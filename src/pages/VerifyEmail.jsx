@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { requestOtp, messageClear } from '../store/reducers/authReducer';
+import { retryPassword, messageClear } from '../store/reducers/authReducer';
 import { toast } from 'react-hot-toast';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -21,7 +21,7 @@ const VerifyEmail = () => {
      e.preventDefault();
      localStorage.setItem('email', email);
      //dispatch(setEmail(email)); 
-     //dispatch(requestOtp({ email })); 
+     dispatch(retryPassword({ email })); 
  };
  
 

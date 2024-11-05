@@ -15,6 +15,7 @@ import CategoryShop from './pages/CategoryShop';
 import SearchProducts from './pages/SearchProducts';
 import VerifyEmail from './pages/VerifyEmail';
 import OTPVerification from './pages/OTPVerification';
+import PasswordReset from './pages/PasswordReset';
 
 function App() {
   const dispatch = useDispatch()
@@ -29,6 +30,7 @@ function App() {
       <Route path='/login' element={<Login/>} />
       <Route path='/verify-email' element={<VerifyEmail/>} />
       <Route path='/otp/:id' element={<OTPVerification/>} />
+      <Route path='/passwordreset' element={<PasswordReset/>} />
       <Route path='/register' element={<Register/>} />
       <Route path='/shops' element={<Shops/>} />
       <Route path='/card' element={<Card/>} />

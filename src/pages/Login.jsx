@@ -91,7 +91,7 @@ const Login = () => {
                                     
                                         <div className='flex justify-between items-center'>
                                             <label htmlFor="password">Password</label>
-                                            <Link to="/forgot-password" className='text-blue-500'>Quên mật khẩu?</Link>
+                                            <Link to="/verify-email" className='text-blue-500'>Quên mật khẩu?</Link>
                                         </div>
                                         <input 
                                             onChange={inputHandle} 

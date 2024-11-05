@@ -45,6 +45,7 @@ const OTPVerification = () => {
     const handleOtpSubmit = (e) => {
         e.preventDefault();
         const otpCode = otp.join('');
+        localStorage.setItem('code', otpCode);
         dispatch(checkOtp({ email, code: otpCode }));
     };
 
@@ -78,20 +79,20 @@ const OTPVerification = () => {
                 localStorage.removeItem('email');
                 localStorage.removeItem('password');
             }
-            else 
-            if ( id === 'register') {
-                // dispatch(customer_login({
-                //     username: email,
-                //     password: localStorage.getItem('password')
-                // }));
+            else if ( id === 'register') {
                 navigate('/login');
                 localStorage.removeItem('email');
                 localStorage.removeItem('password');
+            }
+            else if ( id === 'forgot-password') {
+                navigate('/passwordreset');
+                
             }
         }
         if (errorMessage) {
             toast.error(errorMessage);
             dispatch(messageClear());
+            setOtp(new Array(6).fill(''));
         }
     }, [successMessage, errorMessage]);
 
@@ -132,7 +133,7 @@ const OTPVerification = () => {
                             <span style={{ color: 'red' }}>Mã đã hết hạn</span>
                         )}
                     </div>
-                    <p style={styles.emailInfo}>Chúng tôi đã gửi mã của bạn đến: {email}</p>
+                    <p style={styles.emailInfo}>Chúng tôi đã gửi mã của bạn đến: <strong>{email}</strong></p>
                     <div style={styles.separator}></div>
                     <div style={styles.actions}>
                         <button type="button" style={styles.link} onClick={handleResendOtp} disabled={timer > 0}>Chưa nhận được mã?</button>
@@ -141,10 +142,10 @@ const OTPVerification = () => {
                             type="submit" 
                             style={{
                                 ...styles.submitButton,
-                                backgroundColor: timer > 0 ? '#3b82f6' : '#e5e7eb', // Đổi màu khi hết thời gian
-                                cursor: timer > 0 ? 'pointer' : 'not-allowed', // Đổi con trỏ chuột khi hết thời gian
+                                backgroundColor: timer > 0 ? '#3b82f6' : '#e5e7eb', 
+                                cursor: timer > 0 ? 'pointer' : 'not-allowed', 
                             }} 
-                            disabled={timer > 0 ? false : true} // Vô hiệu hóa nút khi hết thời gian
+                            disabled={timer > 0 ? false : true} 
                         >
                             Xác nhận
                         </button>
@@ -229,7 +230,7 @@ const styles = {
         justifyContent: 'space-between',
         alignItems: 'center',
         width: '100%',
-        marginTop: '20px',
+        marginTop: '10px',
         gap: '10px', // Thêm khoảng cách giữa các nút
     },
     link: {
