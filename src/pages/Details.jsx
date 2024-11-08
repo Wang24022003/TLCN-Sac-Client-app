@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import { Link } from 'react-router-dom';
+import { Link,  useParams } from 'react-router-dom';
 import { IoIosArrowForward } from "react-icons/io"; 
 import Carousel from 'react-multi-carousel'; 
 import 'react-multi-carousel/lib/styles.css'
@@ -16,10 +16,35 @@ import {Pagination } from 'swiper/modules';
 import 'swiper/css'; 
 import 'swiper/css/pagination';
 import {Swiper, SwiperSlide } from 'swiper/react';
-
-
+import { useDispatch, useSelector } from 'react-redux';
+import { product_details } from '../store/reducers/homeReducer';
+import toast from 'react-hot-toast';
+//import { add_to_card,messageClear } from '../store/reducers/cardReducer';
 
 const Details = () => {
+    //const navigate = useNavigate()
+    const {_id} = useParams()
+    const dispatch = useDispatch()
+    const {product,relatedProducts,moreProducts} = useSelector(state => state.home)
+    //const {userInfo } = useSelector(state => state.auth)
+    //const {errorMessage,successMessage } = useSelector(state => state.card)
+
+    useEffect(() => {
+        dispatch(product_details(_id))
+    },[_id])
+
+    // useEffect(() => { 
+    //     if (successMessage) {
+    //         toast.success(successMessage)
+    //         dispatch(messageClear())  
+    //     } 
+    //     if (errorMessage) {
+    //         toast.error(errorMessage)
+    //         dispatch(messageClear())  
+    //     } 
+        
+    // },[successMessage,errorMessage])
+
     const images = [1,2,3,4,5,6]
     const [image, setImage] = useState('')
     const discount = 10
@@ -57,6 +82,33 @@ const Details = () => {
         },
     }
 
+    const [quantity, setQuantity] = useState(1)
+    const inc = () => {
+        if (quantity >= product.quantity) {
+            toast.error('Out of Stock')
+        } else {
+            setQuantity(quantity + 1)
+        }
+    }
+    const dec = () => {
+        if (quantity > 1) {
+            setQuantity(quantity - 1)
+        }
+    }
+
+    // const add_card = () => {
+    //     if (userInfo) {
+    //        dispatch(add_to_card({
+    //         userId: userInfo.id,
+    //         quantity,
+    //         productId : product._id
+    //        }))
+    //     } else {
+    //         navigate('/login')
+    //     }
+    // }
+
+    
     return (
         <div>
             <Header/>
@@ -83,9 +135,9 @@ const Details = () => {
                 <div className='flex justify-start items-center text-md text-slate-600 w-full'>
                     <Link to='/'>Home</Link>
                     <span className='pt-1'><IoIosArrowForward /></span>
-                    <Link to='/'>Category</Link>
+                    <Link to='/'>{ product.category }</Link>
                     <span className='pt-1'><IoIosArrowForward /></span>
-                    <span>Product Name </span>
+                    <span>{ product.name }</span>
                 </div>
 
             </div>
@@ -97,21 +149,21 @@ const Details = () => {
             <div className='grid grid-cols-2 md-lg:grid-cols-1 gap-8'>
                 <div>
                 <div className='p-5 border'>
-                    <img className='h-[400px] w-full' src={image ? `http://localhost:3000/images/products/${image}.webp` : `http://localhost:3000/images/products/${images[2]}.webp`} alt="" />
+                <img className='h-[400px] w-full' src={image ? image : product.images?.[0] } alt="" />
                 </div>
             <div className='py-3'>
                 {
-                    images && <Carousel
+                    product.images && <Carousel
                     autoPlay={true}
                     infinite={true} 
                     responsive={responsive}
                     transitionDuration={500}
                 >
                     {
-                       images.map((img, i) => {
+                        product.images.map((img, i) => {
                         return (
                             <div key={i}  onClick={() => setImage(img)}>
-                               <img className='h-[120px] cursor-pointer' src={`http://localhost:3000/images/products/${img}.webp`} alt="" /> 
+                            <img className='h-[120px] cursor-pointer' src={img} alt="" />  
                             </div>
                         )
                        })
@@ -124,7 +176,7 @@ const Details = () => {
 
         <div className='flex flex-col gap-5'>
                 <div className='text-3xl text-slate-600 font-bold'>
-                    <h3>Product Name </h3>
+                    <h3>{product.name} </h3>
                 </div>
                 <div className='flex justify-start items-center gap-4'>
                     <div className='flex text-xl'>
@@ -135,28 +187,31 @@ const Details = () => {
 
          <div className='text-2xl text-red-500 font-bold flex gap-3'>
             {
-                discount !== 0 ? <>
-                Price : <h2 className='line-through'>$500</h2>
-                <h2>${500 - Math.floor((500 * discount) / 100)} (-{discount}%) </h2>
+                product.discount !== 0 ? <>
+                Price : <h2 className='line-through'>${product.price}</h2>
+                <h2>${product.price - Math.floor((product.price * product.discount) / 100)} (-{product.discount}%) </h2>
                 
-                </> : <h2> Price : $200 </h2>
+                </> : <h2> Price : ${product.price} </h2>
             }
           </div> 
 
           <div className='text-slate-600'>
-            <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley</p>
+          <p>{product.description} </p>
+          {/* <p>{product.description.substring(0, 230)}{'...'} </p> */}
            </div> 
 
             <div className='flex gap-3 pb-10 border-b'>
                 {
-                    stock ? <>
+                    product.quantity ? <>
+                    {/* product.stock ? <> */}
                     <div className='flex bg-slate-200 h-[50px] justify-center items-center text-xl'>
-                        <div className='px-6 cursor-pointer'>-</div>
-                        <div className='px-6'>2</div>
-                        <div className='px-6 cursor-pointer'>+</div>
+                        <div onClick={dec} className='px-6 cursor-pointer'>-</div>
+                        <div className='px-6'>{quantity}</div>
+                        <div onClick={inc} className='px-6 cursor-pointer'>+</div>
                     </div>
                     <div>
-                        <button className='px-8 py-3 h-[50px] cursor-pointer hover:shadow-lg hover:shadow-green-500/40 bg-[#059473] text-white'>Add To Card</button>
+                    {/* <button onClick={add_card} className='px-8 py-3 h-[50px] cursor-pointer hover:shadow-lg hover:shadow-green-500/40 bg-[#059473] text-white'>Add To Card</button>                     */}
+                    <button className='px-8 py-3 h-[50px] cursor-pointer hover:shadow-lg hover:shadow-green-500/40 bg-[#059473] text-white'>Add To Card</button>
                     </div>
                     
                     </> : ''
@@ -176,9 +231,12 @@ const Details = () => {
                 <span>Share On</span> 
             </div> 
             <div className='flex flex-col gap-5'>
-                <span className={`text-${stock ? 'green' : 'red'}-500`}>
+                {/* <span className={`text-${stock ? 'green' : 'red'}-500`}>
                     {stock ? `In Stock(${stock})` : 'Out Of Stock'}
-                </span>
+                </span> */}
+                <span className={`text-${product.stock ? 'green' : 'red'}-500`}>
+                    {product.quantity ? `In Stock(${product.quantity})` : 'Out Of Stock'}
+                </span> 
 
     <ul className='flex justify-start items-center gap-3'>
         <li>
@@ -200,7 +258,7 @@ const Details = () => {
 
           <div className='flex gap-3'>
                 {
-                    stock ? <button className='px-8 py-3 h-[50px] cursor-pointer hover:shadow-lg hover:shadow-green-500/40 bg-[#247462] text-white'>Buy Now</button> : ''
+                    product.quantity ? <button className='px-8 py-3 h-[50px] cursor-pointer hover:shadow-lg hover:shadow-green-500/40 bg-[#247462] text-white'>Buy Now</button> : ''
                 }
                 <Link to='#' className='px-8 py-3 h-[50px] cursor-pointer hover:shadow-lg hover:shadow-red-500/40 bg-red-500 text-white'>
                     Chat Seller
@@ -228,8 +286,7 @@ const Details = () => {
     <div>
         {
             state === 'reviews' ? <Reviews/> : <p className='py-5 text-slate-600'>
-    What is Lorem Ipsum?
-    Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+            {product.description}
             </p>
         }
     </div> 

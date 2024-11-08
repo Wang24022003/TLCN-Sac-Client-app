@@ -9,7 +9,7 @@ export const customer_register = createAsyncThunk(
         try {
             const {data} = await api.post('/auth/register',info)
             //localStorage.setItem('access_token',data.access_token)
-            console.log(data)
+            
             return fulfillWithValue(data)
         } catch (error) {
             return rejectWithValue(error.response.data)
@@ -26,7 +26,7 @@ export const customer_login = createAsyncThunk(
             const token = data.data.access_token; 
             localStorage.setItem('access_token', token)
             
-            console.log(data) 
+             
             return fulfillWithValue(data)
         } catch (error) {
             return rejectWithValue(error.response.data)

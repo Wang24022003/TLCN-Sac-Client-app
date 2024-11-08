@@ -54,6 +54,8 @@ const Login = () => {
     
         if (userInfo) {
             navigate('/'); 
+            localStorage.removeItem('email');
+            localStorage.removeItem('password');
         }
     }, [successMessage, errorMessage, userInfo, dispatch, navigate]);
 
