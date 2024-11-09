@@ -8,20 +8,18 @@ const Profile = () => {
     const dispatch = useDispatch();
     const { user, address } = useSelector(state => state.dashboard);
 
-    console.log("🚀 ~ file: profile.jsx:11 ~ Profile ~ address:", address);
-
-
     const { loader, errorMessage, successMessage } = useSelector(state => state.auth);
 
 
     useEffect(() => {
         dispatch(auth_account());
-        dispatch(auth_default_address());
-    }, [dispatch]);
+        //dispatch(auth_default_address());
+    }, []);
 
     const handleEditClick = () => {
      navigate('/dashboard/edit-profile');
  };
+
 
     return (
         <div className='p-6 bg-white shadow-lg rounded-lg'>

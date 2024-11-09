@@ -1,23 +1,17 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import api from "../../api/api";
-import instance from './../../api/axios-config';
 
 export const get_category = createAsyncThunk(
     'product/get_categories',
     async(_, { fulfillWithValue }) => {
-        // try {
-        //     // const {data} = await api.get('/categories?current=1&pageSize=100')
-        //     //
-        //     // return fulfillWithValue(data)
-        // } catch (error) {
-        //     console.log(error.response)
-        // }
-        const re =await instance.get(`categories?current=1&pageSize=1000`);
-        console.log("🚀 ~ file: homeReducer.js:18 ~ async ~ re:", re);
-
+        try {
+            const {data} = await api.get('/categories?current=1&pageSize=100')
+            //
+            return fulfillWithValue(data)
+        } catch (error) {
+            console.log(error.response)
+        }
     }
-
-
 )
 // End Method 
 
@@ -26,9 +20,9 @@ export const query_product = createAsyncThunk(
      'product/query_product',
      async(query = '', { fulfillWithValue }) => {
          try {
-            //  const {data} = await api.get(`/products?${query}`)
+             const {data} = await api.get(`/products?${query}`)
               
-            //  return fulfillWithValue(data)
+             return fulfillWithValue(data)
          } catch (error) {
              console.log(error.response)
          }

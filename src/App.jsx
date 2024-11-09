@@ -27,6 +27,7 @@ import History from './components/dashboard/History';
 import OTP from './components/dashboard/OTP';
 import Profile from './components/dashboard/Profile';
 import EditProfile from './components/dashboard/EditProfile';
+import Address from './components/dashboard/Address';
 
 
 function App() {
@@ -64,6 +65,7 @@ function App() {
       <Route path='otp' element={<OTP/>} /> 
       <Route path='my-wishlist' element={<Wishlist/>} /> 
       <Route path='history' element={<History/>} /> 
+      <Route path='address' element={<Address/>} /> 
        </Route> 
       </Route>
 

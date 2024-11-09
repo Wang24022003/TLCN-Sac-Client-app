@@ -1,32 +1,35 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { auth_account, auth_edit_profile, auth_refresh } from '../../store/reducers/dashboardReducer';
+import { auth_account, auth_edit_profile, auth_refresh, files_file, messageClear } from '../../store/reducers/dashboardReducer';
+import toast from 'react-hot-toast';
 
 const EditProfile = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const { user } = useSelector(state => state.dashboard);
+    const { user, image, successMessage, errorMessage } = useSelector(state => state.dashboard);
 
     const [formData, setFormData] = useState({
         name: user?.user?.name || '',
         age: user?.user?.age || '',
         email: user?.user?.email || '',
-        gender: user?.user?.gender || ''
+        gender: user?.user?.gender || '',
+        avatar: user?.user?.avatar || ''
     });
 
     useEffect(() => {
         dispatch(auth_account());
-    }, [dispatch]);
+    }, []);
 
     useEffect(() => {
         setFormData({
             name: user?.user?.name || '',
             age: user?.user?.age || '',
             email: user?.user?.email || '',
-            gender: user?.user?.gender || ''
+            gender: user?.user?.gender || '',
+            avatar: image || user?.user?.avatar 
         });
-    }, [user]);
+    }, [user, image]);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -43,19 +46,47 @@ const EditProfile = () => {
         }));
     };
 
+    const handleAvatarChange = async (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const formData = new FormData();
+            formData.append("file", file);
+
+            setFormData(prevData => ({
+                ...prevData,
+                avatar: URL.createObjectURL(file)
+            }));
+            dispatch(files_file(formData));
+        }
+    };
+    
     const handleSaveClick = () => {
-        const {gender, name, age }= formData;
+        const { gender, name, age } = formData;
+        const avatarUrl = image || formData.avatar;
+
         dispatch(auth_edit_profile({
-            gender, name, age
-            
-          }));
-          dispatch(auth_refresh());
-        navigate('/dashboard/profile');
+            gender, name, age, avatar: avatarUrl,
+        })).then(() => {
+            dispatch(auth_refresh());
+            dispatch(auth_account()); 
+            navigate('/dashboard/profile');
+        });
     };
 
     const handleCancelClick = () => {
         navigate('/dashboard/profile');
     };
+
+    useEffect(() => {
+        if (successMessage) {
+            toast.success(successMessage);
+            dispatch(messageClear());  
+        } 
+        if (errorMessage) {
+            toast.error(errorMessage);
+            dispatch(messageClear());
+        }
+    }, [successMessage, errorMessage, dispatch]);
 
     return (
         <div className='p-6 bg-white shadow-lg rounded-lg'>
@@ -65,6 +96,14 @@ const EditProfile = () => {
             <div className='bg-gray-50 p-4 rounded-lg'>
                 <form>
                     <div className='flex flex-col gap-4'>
+                        <div className='flex flex-col items-center'>
+                            <img
+                                src={image || formData.avatar}
+                                alt="Avatar"
+                                className='w-24 h-24 rounded-full mb-4 object-cover'
+                            />
+                            <input type="file" onChange={handleAvatarChange} />
+                        </div>
                         <div className='flex flex-col'>
                             <label className='text-gray-700 font-medium'>Họ và tên:</label>
                             <input

@@ -3,13 +3,20 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import { useDispatch, useSelector } from 'react-redux';
+import { changePassword } from '../store/reducers/authReducer';
 
 const PasswordReset = () => {
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
-    const [errorMessage, setErrorMessage] = useState('');
-    const [isLoading, setIsLoading] = useState(false); // Thêm trạng thái loading
+    const { loader, errorMessage, successMessage } = useSelector(state => state.auth);
+    const [isLoading, setIsLoading] = useState(false); 
+    const dispatch = useDispatch();
     const navigate = useNavigate();
+
+
+    const email = localStorage.getItem('email');
+    const code = localStorage.getItem('code');
 
     const handlePasswordChange = (e) => {
         setNewPassword(e.target.value);
@@ -32,9 +39,16 @@ const PasswordReset = () => {
             return;
         }
 
-        setErrorMessage('');
+        //setErrorMessage('');
+        dispatch(changePassword({ code, "password":newPassword, "confirmPassword":confirmPassword, email }));
+
+        console.log("🚀 ~ file: PasswordReset.jsx:45 ~ handleSubmit ~ confirmPassword:", confirmPassword);
+
+
+        console.log("🚀 ~ file: PasswordReset.jsx:45 ~ handleSubmit ~ newPassword:", newPassword);
+
         setIsLoading(true); // Bắt đầu loading
-        toast.success('Mật khẩu đã được cập nhật thành công!');
+        //toast.success('Mật khẩu đã được cập nhật thành công!');
 
         // Xóa thông tin khỏi localStorage và chuyển hướng đến trang đăng nhập
         localStorage.removeItem('email');

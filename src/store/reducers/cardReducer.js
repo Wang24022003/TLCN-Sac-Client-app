@@ -42,17 +42,37 @@ export const get_wishlist_products = createAsyncThunk(
     async (_, { rejectWithValue }) => {
         try {
 
-            // const token = localStorage.getItem("access_token");
+            const token = localStorage.getItem("access_token");
             
-            // const { data } = await api.get(`/like-products/user`, {
-            //     headers: {
-            //         Authorization: `Bearer ${token}`
-            //     }
-            // });
+            const { data } = await api.get(`/like-products/user`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
             
-            // return data;
+            return data;
         } catch (error) {
             return rejectWithValue(error.response?.data || error.message);
+        }
+    }
+);
+// End Method
+
+
+export const remove_wishlist = createAsyncThunk(
+    'wishlist/remove_wishlist',
+    async(wishlistId, { rejectWithValue,fulfillWithValue }) => {
+        try {
+            const token = localStorage.getItem("access_token");
+            const {data} = await api.delete(`/like-products/${wishlistId}` ,{
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+            // console.log(data)
+            return fulfillWithValue(data);
+        } catch (error) {
+            return rejectWithValue(error.response.data)
         }
     }
 );
@@ -99,7 +119,13 @@ export const cardReducer = createSlice({
             
             state.wishlist_count = payload.data.items.length;
             state.wishlist = payload.data.items; 
-        });
+        })
+
+        .addCase(remove_wishlist.fulfilled, (state, { payload }) => { 
+            state.successMessage = payload.message; 
+            state.wishlist = state.wishlist.filter(p => p._id !== payload.wishlistId); 
+            state.wishlist_count = state.wishlist_count - 1
+        })
         
         
     }

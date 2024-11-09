@@ -79,16 +79,38 @@ export const changePassword = createAsyncThunk(
     'auth/changePassword',
     async ({ code, password, confirmPassword, email }, { rejectWithValue, fulfillWithValue }) => {
         try {
-            const { data } = await api.post('/auth/change-password', {  code, password, confirmPassword, email });
+            const { data } = await api.patch(`/auth/change-password`, {  code, password, confirmPassword, email });
             return fulfillWithValue(data);
-            // const token = data.data.access_token; 
-            // localStorage.setItem('access_token', token)
-            //return data;
+            
         } catch (error) {
             return rejectWithValue(error.response.data);
         }
     }
 );
+
+
+
+// export const customer_logout = createAsyncThunk(
+//     'dashboard/customer_logout',
+//     async (_, { rejectWithValue, fulfillWithValue}) => {
+//         try {
+//             // Lấy token từ localStorage
+//             const token = localStorage.getItem("access_token");
+            
+//             // Gửi request với header Authorization chứa Bearer token
+//             const { data } = await api.post(`/auth/logout`,  {
+//                 headers: {
+//                     Authorization: `Bearer ${token}`
+//                 }
+//             });
+//             localStorage.removeItem("access_token");
+//             return fulfillWithValue(data);
+//         } catch (error) {
+//             return rejectWithValue(error.response?.data || error.message);
+//         }
+//     }
+// );
+// // End Method
 
 const decodeToken = (access_token) => {
     if (access_token) {
@@ -155,13 +177,6 @@ export const authReducer = createSlice({
             state.successMessage = payload.message;
             state.loader = false;
             state.userInfo = userInfo;
-
-          
-            if (userInfo.isActive) {
-                
-            } else {
-                state.errorMessage = "Tài khoản chưa được kích hoạt"; 
-            }
         })
 
 
@@ -229,6 +244,22 @@ export const authReducer = createSlice({
             state.errorMessage = payload?.message || "Mã OTP không hợp lệ";
             state.loader = false;
         })
+
+
+        // .addCase(customer_logout.pending, (state, { payload }) => {
+        //     state.loader = true;
+        // })
+        // .addCase(customer_logout.rejected, (state, { payload }) => {
+        //     state.errorMessage = payload.message;
+        //     state.loader = false;
+        // })
+        
+        // .addCase(customer_logout.fulfilled, (state, { payload }) => {
+           
+        //     state.successMessage = payload.message;
+        //     state.loader = false;
+           
+        // })
     }
 })
 export const {messageClear,user_reset, setEmail} = authReducer.actions

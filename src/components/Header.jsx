@@ -12,7 +12,10 @@ import { FaCartShopping } from "react-icons/fa6";
 import { FaPhoneAlt } from "react-icons/fa";
 import { IoIosArrowDown } from "react-icons/io"; 
 import { useDispatch, useSelector } from 'react-redux';
-import { get_wishlist_products } from '../store/reducers/cardReducer';
+import { get_wishlist_products, reset_count } from '../store/reducers/cardReducer';
+import { messageClear, user_reset } from '../store/reducers/authReducer';
+import toast from 'react-hot-toast';
+import api from '../api/api';
 
 const Header = () => {
     const dispatch = useDispatch();
@@ -42,6 +45,27 @@ const Header = () => {
         dispatch(get_wishlist_products())
     },[])
 
+
+    const logout = async () => {
+        try {
+            // Gọi API logout (Giả sử có API /logout)
+            const response = await api.post('/auth/logout', {}, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+                },
+            });    
+            localStorage.removeItem('access_token');
+            dispatch(user_reset());  
+            dispatch(reset_count());             
+            navigate('/login');
+            toast.success(response.data.message || 'Logout thành công');        
+            dispatch(messageClear());  
+        } catch (error) {
+            console.error("Logout Error: ", error);
+
+            toast.error(error.response?.data?.message || 'Có lỗi xảy ra khi logout');
+        }
+    };
 
     return (
         <div className='w-full bg-white'>
@@ -77,15 +101,39 @@ const Header = () => {
             </ul>
         </div>
 
-        {
-            userInfo ? <Link className='flex cursor-pointer justify-center items-center gap-2 text-sm text-black' to='/dashboard'>
-                <span> <FaUser/> </span>
-                <span> {userInfo.name} </span>
-                </Link> : <Link to='/login' className='flex cursor-pointer justify-center items-center gap-2 text-sm text-black'>
-                <span> <FaLock /> </span>
-                <span>Login </span>
-                 </Link>
-        }
+        <div className='relative group'>
+    {
+        userInfo ? 
+        <Link className='flex cursor-pointer justify-center items-center gap-2 text-sm text-black' to='/dashboard'>
+            <span> <FaUser/> </span>
+            <span> {userInfo.name} </span>
+        </Link> : 
+        <Link to='/login' className='flex cursor-pointer justify-center items-center gap-2 text-sm text-black'>
+            <span> <FaLock /> </span>
+            <span>Login </span>
+        </Link>
+    }
+    {userInfo && (
+        <div className='absolute left-0 mt-2 bg-white shadow-lg rounded-md w-40 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-10'>
+            <ul className='flex flex-col'>
+                <li className='py-2 px-4 text-sm text-black hover:bg-gray-100 cursor-pointer'>
+                    <Link to='/dashboard/profile'>Tài khoản của tôi</Link>
+                </li>
+                <li className='py-2 px-4 text-sm text-black hover:bg-gray-100 cursor-pointer'>
+                    <Link to='/dashboard/my-orders'>Đơn mua</Link>
+                </li>
+                <li className='py-2 px-4 text-sm text-black hover:bg-gray-100 cursor-pointer'>
+                    <button onClick={logout}>Logout</button>
+                </li>
+            </ul>
+        </div>
+    )}
+</div>
+
+
+
+
+       
  
                             </div>
                         </div> 
@@ -197,7 +245,7 @@ const Header = () => {
                     <img src="http://localhost:3000/images/logo.png" alt="" />
                 </Link>
     <div className='flex justify-start items-center gap-10'>
-    <div className='flex group cursor-pointer text-slate-800 text-sm justify-center items-center gap-1 relative after:h-[18px] after:w-[1px] after:bg-[#afafaf] after:-right-[16px] after:absolute '>
+        <div className='flex group cursor-pointer text-slate-800 text-sm justify-center items-center gap-1 relative after:h-[18px] after:w-[1px] after:bg-[#afafaf] after:-right-[16px] after:absolute '>
             <img src="http://localhost:3000/images/language.png" alt="" />
             <span><IoMdArrowDropdown /></span>
             <ul className='absolute invisible transition-all top-12 rounded-sm duration-200 text-white p-2 w-[100px] flex flex-col gap-3 group-hover:visible group-hover:top-6 group-hover:bg-black z-10'>
@@ -206,13 +254,16 @@ const Header = () => {
             </ul>
         </div>
         {
-            userInfo ? <Link className='flex cursor-pointer justify-center items-center gap-2 text-sm text-black' to='/dashboard'>
+            userInfo ? 
+            <Link className='flex cursor-pointer justify-center items-center gap-2 text-sm text-black' to='/dashboard'>
                 <span> <FaUser/> </span>
                 <span>{ userInfo.name }</span>
-                 </Link> : <Link className='flex cursor-pointer justify-center items-center gap-2 text-sm text-black' to='/login'>
+            </Link> 
+                 : 
+            <Link className='flex cursor-pointer justify-center items-center gap-2 text-sm text-black' to='/login'>
                 <span> <FaLock /> </span>
                 <span>Login </span>
-                 </Link>
+            </Link>
         } 
 
     </div>
