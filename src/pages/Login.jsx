@@ -5,9 +5,10 @@ import { FaFacebookF } from "react-icons/fa6";
 import { FaGoogle } from "react-icons/fa6"; 
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { customer_login, messageClear, requestOtp } from '../store/reducers/authReducer';
+import {  customer_login, messageClear, requestOtp } from '../store/reducers/authReducer';
 import toast from 'react-hot-toast';
 import { FadeLoader } from 'react-spinners';
+import { auth_account } from '../store/reducers/dashboardReducer';
 
 const Login = () => {
     const navigate = useNavigate();
@@ -36,6 +37,7 @@ const Login = () => {
     useEffect(() => {
         if (successMessage) {
             toast.success(successMessage);
+
             dispatch(messageClear());  
         } 
         if (errorMessage) {
@@ -51,7 +53,7 @@ const Login = () => {
             dispatch(messageClear());
         }
 
-    
+       
         if (userInfo) {
             navigate('/'); 
             localStorage.removeItem('email');

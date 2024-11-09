@@ -42,11 +42,7 @@ const PasswordReset = () => {
         //setErrorMessage('');
         dispatch(changePassword({ code, "password":newPassword, "confirmPassword":confirmPassword, email }));
 
-        console.log("🚀 ~ file: PasswordReset.jsx:45 ~ handleSubmit ~ confirmPassword:", confirmPassword);
-
-
-        console.log("🚀 ~ file: PasswordReset.jsx:45 ~ handleSubmit ~ newPassword:", newPassword);
-
+        
         setIsLoading(true); // Bắt đầu loading
         //toast.success('Mật khẩu đã được cập nhật thành công!');
 

@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import api from "../../api/api"; 
 
+
 export const auth_account = createAsyncThunk(
      'dashboard/auth_account',
      async (_, { rejectWithValue,fulfillWithValue }) => {
@@ -73,8 +74,6 @@ export const auth_refresh = createAsyncThunk(
         try {
             const token_old = localStorage.getItem("access_token");
 
-            console.log("🚀 ~ file: dashboardReducer.js:76 ~ token_old:", token_old);
-
 
             // Gửi yêu cầu PATCH để cập nhật hồ sơ với dữ liệu mới
             const { data } = await api.get(`auth/refresh`,  {
@@ -82,10 +81,7 @@ export const auth_refresh = createAsyncThunk(
                     Authorization: `Bearer ${token_old}}`,
                 },
             });
-
             const token = data.data.access_token; 
-            console.log("🚀 ~ file: dashboardReducer.js:95 ~ token:", token);
-
             localStorage.setItem('access_token', token)
             return fulfillWithValue(data); 
         } catch (error) {
@@ -144,6 +140,59 @@ export const get_product_history = createAsyncThunk(
 );
 // End Method
 
+export const get_address_user = createAsyncThunk(
+    'product/get_address_user',
+    async(query = '', { rejectWithValue,fulfillWithValue }) => {
+        try {
+            const {data} = await api.get(`/address-user?${query}`)
+            return fulfillWithValue(data)
+        } catch (error) {
+            return rejectWithValue(error.response)
+        }
+    }
+)
+
+// End Method 
+
+
+export const patch_address_user = createAsyncThunk(
+    'dashboard/patch_address_user',
+    async(id, { rejectWithValue,fulfillWithValue }) => {
+        try {
+            const token = localStorage.getItem("access_token");
+
+            const  {data} = await api.patch(`/address-user/user/default/${id}`)
+            
+            return fulfillWithValue(data)
+        } catch (error) {
+            return rejectWithValue(error.response)
+        }
+    }
+)
+
+// End Method 
+
+// export const patch_address_user = createAsyncThunk(
+//     'product/patch_address_user',
+//     async(id, { rejectWithValue,fulfillWithValue }) => {
+//         try {
+//             const token = localStorage.getItem("access_token");
+//             const {data} = await api.patch(`/address-user/user/default/${id}`, {
+//                 headers: {
+//                     Authorization: `Bearer ${token}`
+//                 }
+//             })
+//             return fulfillWithValue(data)
+//         } catch (error) {
+//             return rejectWithValue(error.response)
+//         }
+//     }
+// )
+
+// // End Method 
+
+
+
 export const dashboardReducer = createSlice({
     name: 'dashboard',
     initialState:{
@@ -154,9 +203,11 @@ export const dashboardReducer = createSlice({
         pendingOrder: 0,
         cancelledOrder: 0, 
         user:{},
-        address:{},
+        address:[],
         image:"",
-        history:[]
+        history:[],
+       
+    
     },
     reducers : {
 
@@ -176,7 +227,9 @@ export const dashboardReducer = createSlice({
 
     .addCase(auth_account.fulfilled, (state, { payload }) => {
         state.user = payload.data; 
-        state.successMessage = payload.message;
+        state.loader = false;
+        //state.successMessage = payload.message;
+
     })
 
     .addCase(auth_account.rejected, (state, { payload }) => {
@@ -190,6 +243,7 @@ export const dashboardReducer = createSlice({
 
     .addCase(auth_refresh.fulfilled, (state, { payload }) => {
         state.user = payload.data; 
+        state.loader = false;
         state.successMessage = payload.message;
     })
 
@@ -204,6 +258,7 @@ export const dashboardReducer = createSlice({
 
     .addCase(auth_edit_profile.fulfilled, (state, { payload }) => {
         state.user = payload.data; 
+        state.loader = false;
         state.successMessage = payload.message;
     })
 
@@ -236,7 +291,8 @@ export const dashboardReducer = createSlice({
 
     .addCase(files_file.fulfilled, (state, { payload }) => {
         state.image = payload.data; // Update user info with the new profile data
-        state.successMessage = payload.message;
+        //state.successMessage = payload.message;
+        state.loader = false;
     })
 
     .addCase(files_file.rejected, (state, { payload }) => {
@@ -250,11 +306,43 @@ export const dashboardReducer = createSlice({
 
     .addCase(get_product_history.fulfilled, (state, { payload }) => {
         state.history = payload.data; 
-        state.successMessage = payload.message;
+        state.loader = false;
+        //state.successMessage = payload.message;
     })
 
     .addCase(get_product_history.rejected, (state, { payload }) => {
         state.errorMessage = payload.message; 
+    })
+
+
+    .addCase(get_address_user.pending, (state) => {
+        state.loader = true;
+    })
+
+    .addCase(get_address_user.fulfilled, (state, { payload }) => {
+        state.address = payload.data.result; 
+        //state.successMessage = payload.message;
+        state.loader = false;
+    })
+
+    .addCase(get_address_user.rejected, (state, { payload }) => {
+        state.errorMessage = payload.message; 
+        state.loader = false;
+    })
+
+    .addCase(patch_address_user.pending, (state) => {
+        state.loader = true;
+    })
+
+    .addCase(patch_address_user.fulfilled, (state, { payload }) => {
+        //state.address = payload.data.result; 
+        state.successMessage = "Thiết lập mạc định thành công";
+        state.loader = false;
+    })
+
+    .addCase(patch_address_user.rejected, (state, { payload }) => {
+        state.errorMessage = payload.data.message; 
+        state.loader = false;
     })
 
     }

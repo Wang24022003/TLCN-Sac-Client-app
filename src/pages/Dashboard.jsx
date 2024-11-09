@@ -10,7 +10,7 @@ import { IoMdLogOut } from "react-icons/io";
 import { RiAccountCircleLine } from "react-icons/ri";
 import api from '../api/api';
 import { useDispatch, useSelector } from 'react-redux';
-import { customer_logout, messageClear, retryPassword, user_reset } from '../store/reducers/authReducer';
+import {  customer_logout, messageClear, retryPassword, user_reset } from '../store/reducers/authReducer';
 import { reset_count } from '../store/reducers/cardReducer';
 import { auth_account } from '../store/reducers/dashboardReducer';
 import toast from 'react-hot-toast';
@@ -25,6 +25,7 @@ const Dashboard = () => {
     const { user } = useSelector(state => state.dashboard);
 
     useEffect(() => {
+        
         dispatch(auth_account());
     }, []);
 
@@ -129,6 +130,9 @@ const Dashboard = () => {
                                         </li>
                                         <li className={`py-1 px-3 ${selectedMenu === 'change-password' ? 'bg-green-300 text-white rounded' : 'hover:bg-green-100'}`}>
                                             <Link to='/dashboard/otp' onClick={() => { handleMenuClick('change-password'); handleRequestPasswordChange(); }}>Đổi mật khẩu</Link>
+                                        </li>
+                                        <li className={`py-1 px-3 ${selectedMenu === 'history' ? 'bg-green-300 text-white rounded' : 'hover:bg-green-100'}`}>
+                                            <Link to='/dashboard/history' onClick={() => handleMenuClick('history')}>Sản phẩm xem gần đây</Link>
                                         </li>
                                     </ul>
                                 )}

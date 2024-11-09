@@ -25,7 +25,6 @@ export const customer_login = createAsyncThunk(
             const {data} = await api.post('/auth/login',info)
             const token = data.data.access_token; 
             localStorage.setItem('access_token', token)
-            
              
             return fulfillWithValue(data)
         } catch (error) {
@@ -33,6 +32,8 @@ export const customer_login = createAsyncThunk(
         }
     }
 )
+
+
 // End Method 
 
 
@@ -124,11 +125,13 @@ const decodeToken = (access_token) => {
 
 
 
+
 export const authReducer = createSlice({
     name: 'auth',
     initialState:{
         loader : false,
         userInfo : decodeToken(localStorage.getItem('access_token')),
+        //userInfo : null,
         errorMessage : '',
         successMessage: '', 
         
@@ -173,6 +176,7 @@ export const authReducer = createSlice({
         })
         
         .addCase(customer_login.fulfilled, (state, { payload }) => {
+
             const userInfo = decodeToken(payload.data.access_token);
             state.successMessage = payload.message;
             state.loader = false;
@@ -245,7 +249,7 @@ export const authReducer = createSlice({
             state.loader = false;
         })
 
-
+       
         // .addCase(customer_logout.pending, (state, { payload }) => {
         //     state.loader = true;
         // })
