@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
-import { get_address_user, messageClear,  patch_address_user } from '../../store/reducers/dashboardReducer';
+import { delete_address_user, get_address_user, messageClear,  patch_address_user } from '../../store/reducers/dashboardReducer';
 import toast from 'react-hot-toast';
 
 const Address = () => {
@@ -13,33 +13,37 @@ const Address = () => {
         if (user?.user?._id) {
             dispatch(get_address_user(`user=${user.user._id}`));
         }
-    }, [user,address]);
+    }, [user,dispatch]);
 
     const handleSetDefault = (id) => {
         dispatch(patch_address_user(id));  
         
         if (successMessage) {
             toast.success(successMessage);
+            dispatch(get_address_user(`user=${user.user._id}`));
             dispatch(messageClear());  
         }
 
-         if (errorMessage) {
-
-
-
-           
+         if (errorMessage) { 
             navigate('/login');
             toast.success(errorMessage);
             dispatch(messageClear());  
         }
-
-        
-
     };
 
     const handleDelete = (id) => {
-        if (window.confirm('Bạn có chắc chắn muốn xóa địa chỉ này không?')) {
-            // Thực hiện hành động xóa địa chỉ (có thể bổ sung API để xóa)
+        dispatch(delete_address_user(id));  
+        
+        if (successMessage) {
+            toast.success(successMessage);
+            dispatch(get_address_user(`user=${user.user._id}`));
+            dispatch(messageClear());  
+        }
+
+         if (errorMessage) { 
+            //navigate('/login');
+            toast.error(errorMessage);
+            dispatch(messageClear());  
         }
     };
 
@@ -47,7 +51,7 @@ const Address = () => {
         <div className="bg-white p-6 rounded-md">
             <div className="flex justify-between items-center mb-6">
                 <h2 className="text-2xl font-semibold">Địa chỉ của tôi</h2>
-                <Link to="/add-address" className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600">
+                <Link to="/dashboard/add-address" className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600">
                     + Thêm địa chỉ mới
                 </Link>
             </div>
@@ -61,7 +65,7 @@ const Address = () => {
                                     {addr.receiver} <span className="font-normal text-gray-600">{addr.phone}</span>
                                 </div>
                                 <div className="flex items-center space-x-4">
-                                    <Link to={`/edit-address/${addr._id}`} className="text-blue-500 hover:underline">
+                                    <Link to={`/dashboard/update-address/${addr._id}`} className="text-blue-500 hover:underline">
                                         Cập nhật
                                     </Link>
                                     <button

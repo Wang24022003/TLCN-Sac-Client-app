@@ -1,14 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-
+import { checkOtp, customer_login, messageClear, requestOtp } from '../../store/reducers/authReducer';
 import { toast } from 'react-hot-toast';
-import { checkOtp, customer_login, requestOtp } from '../../store/reducers/authReducer';
-import { messageClear } from '../../store/reducers/dashboardReducer';
-const OTP = () => {
-    const [state, setState] = useState('all')
 
+import { useNavigate, useParams } from 'react-router-dom';
+
+const OTP = () => {
     const { id } = useParams();
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -16,7 +13,7 @@ const OTP = () => {
 
     const [otp, setOtp] = useState(new Array(6).fill(''));
     const [isNavigate, setIsNavigate] = useState(false);
-    const email = localStorage.getItem('email'); 
+    const email = localStorage.getItem('email'); // Định nghĩa email ở đây
 
     const [timer, setTimer] = useState(300);
    
@@ -87,14 +84,12 @@ const OTP = () => {
                 localStorage.removeItem('password');
             }
             else if ( id === 'forgot-password') {
-                navigate('/passwordreset');
-                
+                navigate('/passwordreset');   
             }
-            else if ( id === 'otp') {
-               navigate('/dashboard/change-password');
-               console.log("Navigating to /dashboard/change-password");
-               
-           }
+            else if (isNavigate && id === 'change-password') {
+                navigate('/dashboard/change-password');   
+            }
+            
         }
         if (errorMessage) {
             toast.error(errorMessage);
@@ -111,9 +106,9 @@ const OTP = () => {
     };
 
     return (
-        <div className='bg-white p-4 rounded-md'>
-            
-            <div style={styles.container}>
+        <div>
+           <div className='bg-white p-4 rounded-md'>
+           <div style={styles.container}>
                 <h2 style={styles.title}>Nhập mã OTP</h2>
                 <div style={styles.separator}></div>
                 <p style={styles.description}>
@@ -160,122 +155,125 @@ const OTP = () => {
                     </div>
                 </form>
             </div>
-          
+           </div>
+            
+           
         </div>
     );
 };
 
-
-
 const styles = {
-     container: {
-         maxWidth: '40%',
-         margin: '50px auto',
-         padding: '20px',
-         borderRadius: '10px',
-         backgroundColor: '#ffffff',
-         boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',
-         textAlign: 'center',
-         display: 'flex',
-         flexDirection: 'column',
-         alignItems: 'center',
-     },
-     title: {
-         fontSize: '1.5rem',
-         fontWeight: 'bold',
-         color: '#1f2937',
-         marginBottom: '10px',
-     },
-     separator: {
-         width: '100%',
-         height: '1px',
-         backgroundColor: '#e5e7eb',
-         margin: '10px 0',
-     },
-     description: {
-         fontSize: '1rem',
-         color: '#6b7280',
-         marginBottom: '20px',
-         textAlign: 'center',
-     },
-     form: {
-         display: 'flex',
-         flexDirection: 'column',
-         alignItems: 'center',
-         width: '100%',
-     },
-     otpContainer: {
-         display: 'flex',
-         justifyContent: 'space-evenly',
-         width: '100%',
-         marginBottom: '10px',
-         flexWrap: 'wrap',
-         gap: '8px',
-     },
-     otpInput: {
-         flex: '1 1 45px',
-         maxWidth: '45px',
-         height: '45px',
-         fontSize: '1.25rem',
-         textAlign: 'center',
-         border: '1px solid #d1d5db',
-         borderRadius: '8px',
-         color: '#4b5563',
-     },
-     timer: {
-         fontSize: '0.9rem',
-         color: '#6b7280',
-         marginBottom: '20px',
-         textAlign: 'center',
-     },
-     emailInfo: {
-         fontSize: '0.85rem',
-         color: '#6b7280',
-         textAlign: 'center',
-         marginTop: '10px',
-     },
-     actions: {
-         display: 'flex',
-         justifyContent: 'space-between',
-         alignItems: 'center',
-         width: '100%',
-         marginTop: '10px',
-         gap: '10px', // Thêm khoảng cách giữa các nút
-     },
-     link: {
-         fontSize: '0.85rem',
-         color: '#3b82f6',
-         textDecoration: 'underline',
-         cursor: 'pointer',
-         flex: '1',
-         textAlign: 'center',
-     },
-     cancelButton: {
-         padding: '8px 16px',
-         backgroundColor: '#e5e7eb',
-         color: '#1f2937',
-         border: 'none',
-         borderRadius: '8px',
-         fontSize: '1rem',
-         fontWeight: '500',
-         cursor: 'pointer',
-         flex: '1',
-         maxWidth: '100px',
-         marginRight: '10px', // Tạo khoảng cách bên phải
-     },
-     submitButton: {
-         padding: '8px 16px',
-         backgroundColor: '#3b82f6',
-         color: '#ffffff',
-         border: 'none',
-         borderRadius: '8px',
-         fontSize: '1rem',
-         fontWeight: '500',
-         cursor: 'pointer',
-         flex: '1',
-         maxWidth: '100px',
-         marginLeft: '10px', // Tạo khoảng cách bên trái
-     },
- };
+    container: {
+        maxWidth: '40%',
+        margin: '50px auto',
+        padding: '20px',
+        borderRadius: '10px',
+        backgroundColor: '#ffffff',
+        boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',
+        textAlign: 'center',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+    },
+    title: {
+        fontSize: '1.5rem',
+        fontWeight: 'bold',
+        color: '#1f2937',
+        marginBottom: '10px',
+    },
+    separator: {
+        width: '100%',
+        height: '1px',
+        backgroundColor: '#e5e7eb',
+        margin: '10px 0',
+    },
+    description: {
+        fontSize: '1rem',
+        color: '#6b7280',
+        marginBottom: '20px',
+        textAlign: 'center',
+    },
+    form: {
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        width: '100%',
+    },
+    otpContainer: {
+        display: 'flex',
+        justifyContent: 'space-evenly',
+        width: '100%',
+        marginBottom: '10px',
+        flexWrap: 'wrap',
+        gap: '8px',
+    },
+    otpInput: {
+        flex: '1 1 45px',
+        maxWidth: '45px',
+        height: '45px',
+        fontSize: '1.25rem',
+        textAlign: 'center',
+        border: '1px solid #d1d5db',
+        borderRadius: '8px',
+        color: '#4b5563',
+    },
+    timer: {
+        fontSize: '0.9rem',
+        color: '#6b7280',
+        marginBottom: '20px',
+        textAlign: 'center',
+    },
+    emailInfo: {
+        fontSize: '0.85rem',
+        color: '#6b7280',
+        textAlign: 'center',
+        marginTop: '10px',
+    },
+    actions: {
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        width: '100%',
+        marginTop: '10px',
+        gap: '10px', // Thêm khoảng cách giữa các nút
+    },
+    link: {
+        fontSize: '0.85rem',
+        color: '#3b82f6',
+        textDecoration: 'underline',
+        cursor: 'pointer',
+        flex: '1',
+        textAlign: 'center',
+    },
+    cancelButton: {
+        padding: '8px 16px',
+        backgroundColor: '#e5e7eb',
+        color: '#1f2937',
+        border: 'none',
+        borderRadius: '8px',
+        fontSize: '1rem',
+        fontWeight: '500',
+        cursor: 'pointer',
+        flex: '1',
+        maxWidth: '100px',
+        marginRight: '10px', // Tạo khoảng cách bên phải
+    },
+    submitButton: {
+        padding: '8px 16px',
+        backgroundColor: '#3b82f6',
+        color: '#ffffff',
+        border: 'none',
+        borderRadius: '8px',
+        fontSize: '1rem',
+        fontWeight: '500',
+        cursor: 'pointer',
+        flex: '1',
+        maxWidth: '100px',
+        marginLeft: '10px', // Tạo khoảng cách bên trái
+    },
+};
+
+
+
 
 export default OTP;

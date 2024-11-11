@@ -28,6 +28,8 @@ import OTP from './components/dashboard/OTP';
 import Profile from './components/dashboard/Profile';
 import EditProfile from './components/dashboard/EditProfile';
 import Address from './components/dashboard/Address';
+import AddAddress from './components/dashboard/Address/AddAddress';
+import UpdateAddress from './components/dashboard/Address/UpdateAddress';
 
 
 function App() {
@@ -62,10 +64,12 @@ function App() {
       <Route path='profile' element={<Profile/>} />
       <Route path='Edit-profile' element={<EditProfile/>} />
       <Route path='change-password' element={<ChangePassword/>} /> 
-      <Route path='otp' element={<OTP/>} /> 
+      <Route path='otp/:id' element={<OTP/>} /> 
       <Route path='my-wishlist' element={<Wishlist/>} /> 
       <Route path='history' element={<History/>} /> 
-      <Route path='address' element={<Address/>} /> 
+      <Route path='address' element={<Address/>} />
+      <Route path='add-address' element={<AddAddress/>} /> 
+      <Route path='update-address/:_id' element={<UpdateAddress/>} />
        </Route> 
       </Route>
 

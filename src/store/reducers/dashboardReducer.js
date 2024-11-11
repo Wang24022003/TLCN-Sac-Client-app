@@ -172,6 +172,22 @@ export const patch_address_user = createAsyncThunk(
 
 // End Method 
 
+export const delete_address_user = createAsyncThunk(
+    'dashboard/delete_address_user',
+    async(id, { rejectWithValue,fulfillWithValue }) => {
+        try {
+            //const token = localStorage.getItem("access_token");
+
+            const  {data} = await api.delete(`/address-user/user/remove/${id}`)
+            
+            return fulfillWithValue(data)
+        } catch (error) {
+            return rejectWithValue(error.response)
+        }
+    }
+)
+
+// End Method 
 // export const patch_address_user = createAsyncThunk(
 //     'product/patch_address_user',
 //     async(id, { rejectWithValue,fulfillWithValue }) => {
@@ -227,7 +243,7 @@ export const dashboardReducer = createSlice({
 
     .addCase(auth_account.fulfilled, (state, { payload }) => {
         state.user = payload.data; 
-        state.loader = false;
+        //state.loader = false;
         //state.successMessage = payload.message;
 
     })
@@ -243,7 +259,7 @@ export const dashboardReducer = createSlice({
 
     .addCase(auth_refresh.fulfilled, (state, { payload }) => {
         state.user = payload.data; 
-        state.loader = false;
+        //state.loader = false;
         state.successMessage = payload.message;
     })
 
@@ -258,7 +274,7 @@ export const dashboardReducer = createSlice({
 
     .addCase(auth_edit_profile.fulfilled, (state, { payload }) => {
         state.user = payload.data; 
-        state.loader = false;
+        //state.loader = false;
         state.successMessage = payload.message;
     })
 
@@ -306,7 +322,7 @@ export const dashboardReducer = createSlice({
 
     .addCase(get_product_history.fulfilled, (state, { payload }) => {
         state.history = payload.data; 
-        state.loader = false;
+        //state.loader = false;
         //state.successMessage = payload.message;
     })
 
@@ -322,12 +338,12 @@ export const dashboardReducer = createSlice({
     .addCase(get_address_user.fulfilled, (state, { payload }) => {
         state.address = payload.data.result; 
         //state.successMessage = payload.message;
-        state.loader = false;
+        //state.loader = false;
     })
 
     .addCase(get_address_user.rejected, (state, { payload }) => {
-        state.errorMessage = payload.message; 
-        state.loader = false;
+        //state.errorMessage = payload.message; 
+        //state.loader = false;
     })
 
     .addCase(patch_address_user.pending, (state) => {
@@ -336,11 +352,27 @@ export const dashboardReducer = createSlice({
 
     .addCase(patch_address_user.fulfilled, (state, { payload }) => {
         //state.address = payload.data.result; 
-        state.successMessage = "Thiết lập mạc định thành công";
-        state.loader = false;
+        state.successMessage = "Thiết lập mặc định thành công";
+        //state.loader = false;
     })
 
     .addCase(patch_address_user.rejected, (state, { payload }) => {
+        state.errorMessage = payload.data.message; 
+        //state.loader = false;
+    })
+
+
+    .addCase(delete_address_user.pending, (state) => {
+        state.loader = true;
+    })
+
+    .addCase(delete_address_user.fulfilled, (state, { payload }) => {
+        //state.address = payload.data.result; 
+        state.successMessage = "Xóa địa chỉ thành công.";
+        //state.loader = false;
+    })
+
+    .addCase(delete_address_user.rejected, (state, { payload }) => {
         state.errorMessage = payload.data.message; 
         state.loader = false;
     })

@@ -129,7 +129,7 @@ const Dashboard = () => {
                                             <Link to='/dashboard/address' onClick={() => handleMenuClick('address')}>Địa chỉ</Link>
                                         </li>
                                         <li className={`py-1 px-3 ${selectedMenu === 'change-password' ? 'bg-green-300 text-white rounded' : 'hover:bg-green-100'}`}>
-                                            <Link to='/dashboard/otp' onClick={() => { handleMenuClick('change-password'); handleRequestPasswordChange(); }}>Đổi mật khẩu</Link>
+                                            <Link to='/dashboard/otp/change-password' onClick={() => { handleMenuClick('change-password'); handleRequestPasswordChange(); }}>Đổi mật khẩu</Link>
                                         </li>
                                         <li className={`py-1 px-3 ${selectedMenu === 'history' ? 'bg-green-300 text-white rounded' : 'hover:bg-green-100'}`}>
                                             <Link to='/dashboard/history' onClick={() => handleMenuClick('history')}>Sản phẩm xem gần đây</Link>
