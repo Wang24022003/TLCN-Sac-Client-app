@@ -14,6 +14,7 @@ import {  customer_logout, messageClear, retryPassword, user_reset } from '../st
 import { reset_count } from '../store/reducers/cardReducer';
 import { auth_account } from '../store/reducers/dashboardReducer';
 import toast from 'react-hot-toast';
+import { noti_reset } from '../store/reducers/notificationReducer';
 
 const Dashboard = () => {
     const navigate = useNavigate();
@@ -39,6 +40,7 @@ const Dashboard = () => {
             localStorage.removeItem('access_token');
             dispatch(user_reset());
             dispatch(reset_count());
+            dispatch(noti_reset());
             navigate('/login');
             toast.success(response.data.message || 'Logout thành công');
             dispatch(messageClear());

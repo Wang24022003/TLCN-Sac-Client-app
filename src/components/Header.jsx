@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { MdEmail } from "react-icons/md";
 import { IoMdPhonePortrait } from "react-icons/io";
-import { FaFacebookF, FaList, FaLock, FaUser } from "react-icons/fa";
+import { FaBell, FaFacebookF, FaList, FaLock, FaUser } from "react-icons/fa";
 import { FaTwitter } from "react-icons/fa6";
 import { FaLinkedin } from "react-icons/fa";
 import { FaGithub } from "react-icons/fa";
@@ -13,9 +13,11 @@ import { FaPhoneAlt } from "react-icons/fa";
 import { IoIosArrowDown } from "react-icons/io"; 
 import { useDispatch, useSelector } from 'react-redux';
 import { get_wishlist_products, reset_count } from '../store/reducers/cardReducer';
+import { noti_reset } from '../store/reducers/notificationReducer';
 import { messageClear, user_reset } from '../store/reducers/authReducer';
 import toast from 'react-hot-toast';
 import api from '../api/api';
+import '../Css/Header.css';
 
 const Header = () => {
     const dispatch = useDispatch();
@@ -24,7 +26,10 @@ const Header = () => {
     const {userInfo} = useSelector(state => state.auth) 
 
     const {wishlist_count} = useSelector(state => state.card) 
+    const {notifications_count} = useSelector(state => state.notification) 
     const {pathname} = useLocation()
+
+    
      
     const [showShidebar, setShowShidebar] = useState(true);
     const [categoryShow, setCategoryShow] = useState(true);
@@ -56,7 +61,8 @@ const Header = () => {
             });    
             localStorage.removeItem('access_token');
             dispatch(user_reset());  
-            dispatch(reset_count());             
+            dispatch(reset_count()); 
+            dispatch(noti_reset());             
             navigate('/login');
             toast.success(response.data.message || 'Logout thành công');        
             dispatch(messageClear());  
@@ -68,8 +74,9 @@ const Header = () => {
     };
 
     return (
-        <div className='w-full bg-white'>
-            <div className='header-top bg-[#caddff] md-lg:hidden'>
+        <div className='w-full bg-white header-fixed'>
+            <div className='header-top bg-[#caddff] md-lg:hidden '>
+            
                 <div className='w-[85%] lg:w-[90%] mx-auto'>
                     <div className='flex w-full justify-between items-center h-[50px] text-slate-500'>
                         <ul className='flex justify-start items-center gap-8 font-semibold text-black'>
@@ -182,31 +189,31 @@ const Header = () => {
 
                 <div className='flex md-lg:hidden justify-center items-center gap-5'>
                     <div className='flex justify-center gap-5'>
-                    <div
-                        onClick={() => navigate(userInfo ? '/dashboard/my-wishlist' : '/login')}
-                        className="relative flex justify-center items-center cursor-pointer w-[35px] h-[35px] rounded-full bg-[#e2e2e2]"
-                        >
-                        <span className="text-xl text-green-500"><FaHeart /></span>
-                        {wishlist_count !== 0 && (
-                            <div className="w-[20px] h-[20px] absolute bg-red-500 rounded-full text-white flex justify-center items-center -top-[3px] -right-[5px]">
-                            {wishlist_count}
-                            </div>
-                        )}
-                        
-                        {/* Hover dropdown for wishlist preview */}
-                        {/* {wishlist_count !== 0 && (
-                            <div className="absolute top-[45px] right-0 bg-white shadow-lg p-4 rounded-lg w-[200px] hidden group-hover:block">
-                            {wishlist_count.slice(0, 3).map((item, index) => (
-                                <div key={index} className="flex items-center mb-2">
-                                <img src={item.image} alt={item.name} className="w-[40px] h-[40px] mr-2 rounded-md" />
-                                <span className="text-sm text-gray-700">{item.name}</span>
+                        <div
+                            onClick={() => navigate(userInfo ? '/dashboard/my-wishlist' : '/login')}
+                            className="relative flex justify-center items-center cursor-pointer w-[35px] h-[35px] rounded-full bg-[#e2e2e2]"
+                            >
+                            <span className="text-xl text-green-500"><FaHeart /></span>
+                            {wishlist_count !== 0 && (
+                                <div className="w-[20px] h-[20px] absolute bg-red-500 rounded-full text-white flex justify-center items-center -top-[3px] -right-[5px]">
+                                {wishlist_count}
                                 </div>
-                            ))}
-                            <button onClick={() => navigate('/dashboard/my-wishlist')} className="text-blue-500 text-xs underline mt-2">
-                                Xem tất cả
-                            </button>
-                            </div>
-                        )} */}
+                            )}
+                            
+                            {/* Hover dropdown for wishlist preview */}
+                            {/* {wishlist_count !== 0 && (
+                                <div className="absolute top-[45px] right-0 bg-white shadow-lg p-4 rounded-lg w-[200px] hidden group-hover:block">
+                                {wishlist_count.slice(0, 3).map((item, index) => (
+                                    <div key={index} className="flex items-center mb-2">
+                                    <img src={item.image} alt={item.name} className="w-[40px] h-[40px] mr-2 rounded-md" />
+                                    <span className="text-sm text-gray-700">{item.name}</span>
+                                    </div>
+                                ))}
+                                <button onClick={() => navigate('/dashboard/my-wishlist')} className="text-blue-500 text-xs underline mt-2">
+                                    Xem tất cả
+                                </button>
+                                </div>
+                            )} */}
                         </div>
 
                         
@@ -219,6 +226,17 @@ const Header = () => {
                                     }
 
                                 </div> 
+                        </div> 
+
+                        <div 
+                        onClick={() => navigate(userInfo ? '/dashboard/notifications' : '/login')}
+                        className='relative flex justify-center items-center cursor-pointer w-[35px] h-[35px] rounded-full bg-[#e2e2e2]'>
+                            <span className='text-xl text-green-500'><FaBell /></span>
+                            <div className='w-[20px] h-[20px] absolute bg-red-500 rounded-full text-white flex justify-center items-center -top-[3px] -right-[5px]'>
+                                {
+                                    notifications_count
+                                }
+                            </div> 
                         </div> 
                     </div> 
                 </div> 
@@ -398,5 +416,8 @@ const Header = () => {
         </div>
     );
 };
+
+
+
 
 export default Header;

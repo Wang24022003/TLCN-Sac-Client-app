@@ -30,6 +30,7 @@ import EditProfile from './components/dashboard/EditProfile';
 import Address from './components/dashboard/Address';
 import AddAddress from './components/dashboard/Address/AddAddress';
 import UpdateAddress from './components/dashboard/Address/UpdateAddress';
+import Notifications from './components/dashboard/Notifications';
 
 
 function App() {
@@ -70,6 +71,7 @@ function App() {
       <Route path='address' element={<Address/>} />
       <Route path='add-address' element={<AddAddress/>} /> 
       <Route path='update-address/:_id' element={<UpdateAddress/>} />
+      <Route path='notifications' element={<Notifications/>} />
        </Route> 
       </Route>
 

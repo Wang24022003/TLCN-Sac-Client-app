@@ -59,10 +59,6 @@ export const address_province = createAsyncThunk(
      async(info, { rejectWithValue,fulfillWithValue }) => {
          try {
              const {data} = await api.post('/address-user',info)
-
-             console.log("🚀 ~ file: addressReducer.js:63 ~ async ~ data:", data);
-
-             //localStorage.setItem('access_token',data.access_token)
              
              return fulfillWithValue(data)
          } catch (error) {
@@ -72,6 +68,37 @@ export const address_province = createAsyncThunk(
  )
  // End Method 
 
+ export const get_address_user = createAsyncThunk(
+    'address/get_address_user',
+    async(id = '', { rejectWithValue,fulfillWithValue }) => {
+        try {
+            const {data} = await api.get(`/address-user/user/${id}`)
+            return fulfillWithValue(data)
+        } catch (error) {
+            return rejectWithValue(error.response)
+        }
+    }
+)
+
+// End Method
+ 
+
+
+export const patch_address_user = createAsyncThunk(
+    'auth/patch_address_user',
+    async(info, { rejectWithValue,fulfillWithValue }) => {
+        try {
+            const {data} = await api.patch('/address-user/user',info)
+            
+            return fulfillWithValue(data)
+        } catch (error) {
+            return rejectWithValue(error.response.data)
+        }
+    }
+)
+// End Method
+
+// End Method
 export const addressReducer = createSlice({
     name: 'address',
     initialState:{
@@ -85,6 +112,7 @@ export const addressReducer = createSlice({
         provinces:[],
         districts:[],
         wards:[],
+        adressDetail:{}
        
     
     },
@@ -169,6 +197,34 @@ export const addressReducer = createSlice({
           state.loader = false;
       })
     
+
+      .addCase(get_address_user.pending, (state) => {
+        state.loader = true;
+        })
+
+        .addCase(get_address_user.fulfilled, (state, { payload }) => {
+            state.adressDetail = payload.data; 
+            //state.successMessage = payload.message;
+            //state.loader = false;
+        })
+
+
+
+        .addCase(patch_address_user.pending, (state) => {
+            state.loader = true;
+        })
+    
+        .addCase(patch_address_user.fulfilled, (state, { payload }) => {
+            //state.wards = payload.data; 
+            state.successMessage = "Cập nhật địa chỉ thành công";
+            //state.loader = false;
+        })
+    
+        .addCase(patch_address_user.rejected, (state, { payload }) => {
+  
+            state.errorMessages = payload.message; 
+            state.loader = false;
+        })
 
     }
 })

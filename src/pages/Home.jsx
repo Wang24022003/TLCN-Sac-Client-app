@@ -7,14 +7,19 @@ import Products from '../components/products/Products';
 import Footer from '../components/Footer';
 import { useDispatch, useSelector } from 'react-redux';
 import {   query_product } from '../store/reducers/homeReducer';
+import { get_notifications } from '../store/reducers/notificationReducer';
 
 const Home = () => {
 
     const dispatch = useDispatch()
+    const { user} = useSelector(state => state.dashboard);
+
     const {products,latest_product,topRated_product,discount_product} = useSelector(state => state.home)
     useEffect(() => { 
         dispatch(query_product())
-
+        if (user?.user?._id) {
+            dispatch(get_notifications(`${user.user._id}`));
+        }
     },[])
 
 
